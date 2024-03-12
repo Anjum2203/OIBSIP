@@ -1,0 +1,179 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Book {
+    int bookId;
+    String title;
+    String author;
+    boolean isAvailable;
+
+    public Book(int bookId, String title, String author) {
+        this.bookId = bookId;
+        this.title = title;
+        this.author = author;
+        this.isAvailable = true;
+    }
+}
+
+class Member {
+    int memberId;
+    String name;
+
+    public Member(int memberId, String name) {
+        this.memberId = memberId;
+        this.name = name;
+    }
+}
+
+public class LibraryManagementSystem {
+    static ArrayList<Book> books = new ArrayList<>();
+    static ArrayList<Member> members = new ArrayList<>();
+    static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        initializeLibrary();
+        while (true) {
+            showMenu();
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (choice) {
+                case 1:
+                    viewBooks();
+                    break;
+                case 2:
+                    issueBook();
+                    break;
+                case 3:
+                    returnBook();
+                    break;
+                case 4:
+                    showContactInfo();
+                    break;
+                case 5:
+                    System.out.println("Exiting the system. Thank you!");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    static void initializeLibrary() {
+        // Sample data initialization
+        books.add(new Book(1, "Java Programming", "John Doe"));
+        books.add(new Book(2, "Data Structures", "Jane Smith"));
+
+        members.add(new Member(101, "Swathi"));
+        members.add(new Member(102, "Rohith"));
+    }
+
+    static void showMenu() {
+        System.out.println("\n------ Library Management System ------");
+        System.out.println("1. View Books");
+        System.out.println("2. Issue a Book");
+        System.out.println("3. Return a Book");
+        System.out.println("4. Contact Library");
+        System.out.println("5. Exit");
+        System.out.print("Enter your choice: ");
+    }
+
+    static void viewBooks() {
+        System.out.println("\n------ Available Books ------");
+        for (Book book : books) {
+            System.out.println("Book ID: " + book.bookId + " | Title: " + book.title + " | Author: " + book.author +
+                    " | Status: " + (book.isAvailable ? "Available" : "Not Available"));
+        }
+    }
+
+    static void issueBook() {
+        System.out.print("Enter your member ID: ");
+        int memberId = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        Member member = getMemberById(memberId);
+
+        if (member == null) {
+            System.out.println("Member not found.");
+            return;
+        }
+
+        viewBooks();
+        System.out.print("Enter the Book ID you want to issue: ");
+        int bookId = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        Book book = getBookById(bookId);
+
+        if (book == null) {
+            System.out.println("Book not found.");
+            return;
+        }
+
+        if (!book.isAvailable) {
+            System.out.println("The selected book is not available for issuance.");
+            return;
+        }
+
+        book.isAvailable = false;
+        System.out.println("Book issued successfully to " + member.name);
+    }
+
+    static void returnBook() {
+        System.out.print("Enter your member ID: ");
+        int memberId = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        Member member = getMemberById(memberId);
+
+        if (member == null) {
+            System.out.println("Member not found.");
+            return;
+        }
+
+        viewBooks();
+        System.out.print("Enter the Book ID you want to return: ");
+        int bookId = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        Book book = getBookById(bookId);
+
+        if (book == null) {
+            System.out.println("Book not found.");
+            return;
+        }
+
+        if (book.isAvailable) {
+            System.out.println("The selected book is already marked as available.");
+            return;
+        }
+
+        book.isAvailable = true;
+        System.out.println("Book returned successfully by " + member.name);
+    }
+
+    static void showContactInfo() {
+        System.out.println("\n------ Contact Information ------");
+        System.out.println("Email: library@example.com");
+        System.out.println("Phone: +1-123-456-7890");
+    }
+
+    static Member getMemberById(int memberId) {
+        for (Member member : members) {
+            if (member.memberId == memberId) {
+                return member;
+            }
+        }
+        return null;
+    }
+
+    static Book getBookById(int bookId) {
+        for (Book book : books) {
+            if (book.bookId == bookId) {
+                return book;
+            }
+        }
+        return null;
+    }
+}
